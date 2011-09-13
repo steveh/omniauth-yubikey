@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Oa::Yubikey::VERSION
   s.authors     = ["Steve Hoeksema"]
   s.email       = ["steve@seven.net.nz"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.homepage    = "https://github.com/steveh/oa-yubikey"
+  s.summary     = "OmniAuth strategy for authenticating against the Yubico API with a Yubikey OTP"
+  s.description = "OmniAuth strategy for authenticating against the Yubico API with a Yubikey OTP"
 
   s.rubyforge_project = "oa-yubikey"
 
