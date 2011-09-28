@@ -1,7 +1,10 @@
-require "oa-yubikey/version"
+require "omniauth/yubikey/version"
+require "omniauth/yubikey/verifier"
+require "omniauth/yubikey/result"
+require "omniauth/yubikey/otp_error"
+require "omniauth/strategies/yubikey"
 
-module Oa
+module OmniAuth
   module Yubikey
-    # Your code goes here...
   end
 end
