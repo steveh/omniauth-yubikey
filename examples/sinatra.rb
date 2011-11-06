@@ -1,6 +1,6 @@
 require "rubygems"
 require "sinatra"
-require "oa-yubikey"
+require "omniauth-yubikey"
 
 use Rack::Session::Cookie
 

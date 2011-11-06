@@ -5,6 +5,8 @@ To Do
 
 * More RSpec coverage
 * Verify the hash returned by Yubico
+* Use Faraday
+* Require valid SSL certificate
 
 
 Contains portions of code from:

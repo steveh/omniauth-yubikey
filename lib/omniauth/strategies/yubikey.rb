@@ -1,4 +1,4 @@
-require "omniauth/strategy"
+require "omniauth"
 
 module OmniAuth
   module Strategies
@@ -6,16 +6,13 @@ module OmniAuth
 
       include OmniAuth::Strategy
 
-      attr_accessor :options, :api_id, :api_key
+      args [:api_id, :api_key]
 
-      attr_reader :otp_id
+      option :api_id, nil
+      option :api_key, nil
+      option :api_url, "https://api.yubico.com/wsapi/"
 
-      def initialize(app, api_id = nil, api_key = nil, options = {}, &block)
-        self.api_id = api_id
-        self.api_key = api_key
-
-        super(app, :yubikey, options, &block)
-      end
+      attr_accessor :otp_id
 
       def request_phase
         if env["REQUEST_METHOD"] == "GET"
@@ -27,12 +24,8 @@ module OmniAuth
 
       private
 
-        def title
-          name.to_s.split("_").map{ |s| s.capitalize }.join(" ")
-        end
-
         def get_credentials
-          OmniAuth::Form.build(:title => title) do
+          OmniAuth::Form.build(:title => "Yubikey") do
             password_field "One-time password", "otp"
           end.to_response
         end
@@ -41,20 +34,16 @@ module OmniAuth
           request["otp"]
         end
 
-        def api_url
-          options[:api_url] if options
-        end
-
         def perform
-          verifier = OmniAuth::Yubikey::Verifier.new(api_id, api_key, api_url)
+          verifier = OmniAuth::Yubikey::Verifier.new(options.api_id, options.api_key, options.api_url)
           result = verifier.verify!(otp)
 
-          @otp_id = result.id
+          self.otp_id = result.id
 
-          @env["omniauth.auth"] = auth_hash
-          @env["omniauth.yubikey"] = result
-          @env["REQUEST_METHOD"] = "GET"
-          @env["PATH_INFO"] = "#{OmniAuth.config.path_prefix}/#{name.to_s}/callback"
+          env["omniauth.auth"] = auth_hash
+          env["omniauth.yubikey"] = result
+          env["REQUEST_METHOD"] = "GET"
+          env["PATH_INFO"] = "#{OmniAuth.config.path_prefix}/#{name.to_s}/callback"
 
           call_app!
         rescue OmniAuth::Yubikey::OtpError => e
@@ -65,15 +54,8 @@ module OmniAuth
           fail!(:invalid_credentials)
         end
 
-        def auth_hash
-          OmniAuth::Utils.deep_merge(
-            super, {
-              "uid" => otp_id,
-              "user_info" => {
-                "name" => otp_id,
-              },
-            }
-          )
+        uid do
+          otp_id
         end
 
     end

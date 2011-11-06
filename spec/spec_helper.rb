@@ -1,1 +1,1 @@
-require "oa-yubikey"
+require "omniauth-yubikey"

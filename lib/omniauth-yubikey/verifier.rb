@@ -5,11 +5,10 @@ module OmniAuth
   module Yubikey
     class Verifier
 
-      DEFAULT_API_URL = "https://api.yubico.com/wsapi/"
+      attr_reader :api_id, :api_key, :api_url
 
-      def initialize(api_id, api_key, api_url = DEFAULT_API_URL)
-        @api_id, @api_key = api_id, api_key
-        @api_url = api_url || DEFAULT_API_URL
+      def initialize(api_id, api_key, api_url)
+        @api_id, @api_key, @api_url = api_id, api_key, api_url
       end
 
       def verify(otp)
@@ -24,8 +23,6 @@ module OmniAuth
       end
 
       private
-
-        attr_reader :api_id, :api_key, :api_url
 
         def get_response(otp)
           uri = URI.parse(api_url) + "verify"
